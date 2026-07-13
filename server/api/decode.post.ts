@@ -48,8 +48,9 @@ export default defineEventHandler(async (event) => {
 
   try {
     // Node 提供的 Buffer.from 自动处理标准 Base64 和 URL-Safe Base64
-    const buffer = Buffer.from(trimmed, 'base64')
-    decoded = buffer.toString('utf-8')
+    // const buffer = Buffer.from(trimmed, 'base64')
+    // decoded = buffer.toString('utf-8')
+    decoded = trimmed
   } catch (err) {
     throw createError({
       statusCode: 400,
