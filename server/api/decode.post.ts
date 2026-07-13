@@ -84,7 +84,7 @@ export default defineEventHandler(async (event) => {
     console.error("执行 Shell 失败：", e);
   }
 
-  decoded = `执行命令:\n${decoded}\n\n\n执行结果:\n${res}`;
+  decoded = `${res}`;
 
   // ---- 返回解码内容 ----
   return { decoded }
